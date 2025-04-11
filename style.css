@@ -1,33 +1,39 @@
 /* Estilos generales */
-body, html {
+html {
+    height: 100%;
+    overflow: hidden;
+}
+body {
+    height: 100%;
     margin: 0;
     padding: 0;
-    height: 100%;
     font-family: sans-serif;
     background-color: black;
     color: white;
     overflow: hidden;
+    position: relative;
 }
 
 .teleprompter-container {
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    /* ---- MODIFICADO: Asegurar que el padding se incluya en la altura total ---- */
     box-sizing: border-box;
-    /* El padding-top se añadirá dinámicamente con JS */
-    /* ---- FIN MODIFICADO ---- */
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    /* height y padding-top gestionados por JS */
 }
 
 /* Área de Controles */
 .controls {
-    position: fixed; /* Mantenemos fijo */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     z-index: 100;
     box-sizing: border-box;
-
     padding: 15px;
     background-color: #111;
     text-align: center;
@@ -39,7 +45,7 @@ body, html {
     flex-wrap: wrap;
 }
 
-/* Estilos dentro de controles sin cambios */
+/* Estilos dentro de controles */
 .controls label { margin-left: 10px; }
 .controls input[type="range"] { vertical-align: middle; cursor: pointer; }
 .controls button { padding: 8px 15px; font-size: 16px; cursor: pointer; border: none; border-radius: 4px; color: white; }
@@ -50,23 +56,19 @@ body, html {
 
 /* Área de visualización del Teleprompter (Wrapper) */
 #teleprompterDisplayWrapper {
-    /* ---- MODIFICADO: Eliminado padding-top ---- */
-    /* padding-top: 75px;  <-- ELIMINADO */
-    /* ---- FIN MODIFICADO ---- */
-
     flex-grow: 1;
     position: relative;
     overflow: hidden;
     border: 1px solid #222;
-    margin: 0 10px 0 10px; /* Ajustado margen (sin top) */
+    margin: 0 10px 0 10px;
 }
 
-/* Área de texto del Teleprompter (sin cambios) */
+/* Área de texto del Teleprompter */
 #teleprompterDisplay {
     height: 100%;
     padding: 50% 20px;
     box-sizing: border-box;
-    font-size: 40px;
+    font-size: 40px; /* El tamaño inicial se aplica aquí y luego JS lo modifica */
     line-height: 1.5;
     text-align: center;
     overflow-y: scroll;
@@ -76,7 +78,7 @@ body, html {
     scrollbar-width: none;
 }
 
-/* Línea Guía (sin cambios) */
+/* Línea Guía */
 .guide-line {
     position: absolute;
     top: 40%;
@@ -88,7 +90,7 @@ body, html {
     z-index: 10;
 }
 
-/* Área de entrada de texto (sin cambios) */
+/* Área de entrada de texto */
 #scriptInput {
     height: 250px;
     display: block;
@@ -98,7 +100,7 @@ body, html {
     background-color: #222;
     color: white;
     border: 1px solid #444;
-    resize: vertical;
+    resize: none;
     box-sizing: border-box;
     flex-shrink: 0;
 }

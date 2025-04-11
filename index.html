@@ -2,31 +2,30 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
     <title>Teleprompter Web</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="teleprompter-container">
-        
+
         <div class="controls">
             <button id="playPauseBtn">Play</button>
             <button id="stopBtn">Stop</button>
-            
+
             <label for="speedControl">Velocidad:</label>
             <input type="range" id="speedControl" min="1" max="20" value="5">
-            <span id="speedValue">5</span>
+            <span id="speedValue">5</span> <!-- Asegúrate que este ID existe -->
 
             <label for="fontSizeControl">Tamaño Texto:</label>
             <input type="range" id="fontSizeControl" min="10" max="100" value="40">
-            <span id="fontSizeValue">40px</span>
+            <span id="fontSizeValue">40px</span> <!-- Asegúrate que este ID existe -->
         </div>
 
         <div id="teleprompterDisplayWrapper">
              <div id="teleprompterDisplay" contenteditable="false">
                 <!-- El texto del script aparecerá aquí -->
              </div>
-             <!-- Línea guía (opcional pero útil) -->
              <div class="guide-line"></div>
         </div>
 
