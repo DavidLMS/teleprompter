@@ -1,0 +1,115 @@
+/* Estilos generales */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: sans-serif;
+    background-color: black; /* Fondo negro por defecto */
+    color: white; /* Letras blancas por defecto */
+    overflow: hidden; /* Evita scrollbars en el body */
+}
+
+.teleprompter-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Ocupa toda la altura de la ventana */
+}
+
+/* Área de Controles */
+.controls {
+    padding: 15px;
+    background-color: #111; /* Un gris muy oscuro para los controles */
+    text-align: center;
+    border-bottom: 1px solid #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px; /* Espacio entre controles */
+    flex-wrap: wrap; /* Permite que los controles pasen a la siguiente línea si no caben */
+}
+
+.controls label {
+    margin-left: 10px;
+}
+
+.controls input[type="range"] {
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+.controls button {
+    padding: 8px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    color: white;
+}
+
+#playPauseBtn {
+    background-color: #4CAF50; /* Verde */
+}
+
+#playPauseBtn.playing {
+    background-color: #ff9800; /* Naranja cuando está en Pausa */
+}
+
+#stopBtn {
+    background-color: #f44336; /* Rojo */
+}
+
+/* Área de visualización del Teleprompter (Wrapper) */
+#teleprompterDisplayWrapper {
+    flex-grow: 1; /* Ocupa el espacio restante */
+    position: relative; /* Necesario para la línea guía absoluta */
+    overflow: hidden; /* Oculta el desbordamiento */
+    border: 1px solid #222; /* Borde sutil */
+    margin: 10px 10px 0 10px; /* Margen superior y laterales, sin margen inferior */
+}
+
+/* Área de texto del Teleprompter */
+#teleprompterDisplay {
+    height: 100%;
+    padding: 50% 20px; /* Padding superior/inferior para centrar inicio/fin */
+    box-sizing: border-box; /* Incluye padding en el tamaño total */
+    font-size: 40px; /* Tamaño inicial, se controla con JS */
+    line-height: 1.5;
+    text-align: center;
+    overflow-y: scroll; /* Permite scroll manual cuando está detenido */
+    scroll-behavior: smooth; /* Scroll suave manual */
+    /* Ocultar la barra de scroll estándar (opcional, funciona en Webkit/Blink) */
+    &::-webkit-scrollbar {
+        display: none; 
+    }
+    -ms-overflow-style: none;  /* IE y Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* Línea Guía (Opcional) */
+.guide-line {
+    position: absolute;
+    top: 40%; /* Posición vertical (ajustar según preferencia) */
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: rgba(255, 0, 0, 0.5); /* Rojo semitransparente */
+    pointer-events: none; /* Para que no interfiera con el click */
+    z-index: 10;
+}
+
+
+/* Área de entrada de texto */
+#scriptInput {
+    /* ---- MODIFICADO ---- */
+    height: 250px; /* Más altura */
+    display: block; /* Asegura que sea bloque para ocultar/mostrar */
+    /* ---- FIN MODIFICADO ---- */
+    margin: 10px; /* Margen exterior */
+    padding: 10px; /* Margen interior */
+    font-size: 14px;
+    background-color: #222; /* Fondo oscuro para el textarea */
+    color: white; /* Texto blanco */
+    border: 1px solid #444;
+    resize: vertical; /* Permite redimensionar verticalmente */
+    box-sizing: border-box;
+}
