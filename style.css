@@ -17,6 +17,15 @@ body, html {
 
 /* Área de Controles */
 .controls {
+    /* ---- MODIFICADO: Hacer los controles fijos ---- */
+    position: fixed; /* Fija los controles a la ventana */
+    top: 0;          /* Pégalos a la parte superior */
+    left: 0;         /* Pégalos a la izquierda */
+    width: 100%;     /* Ocupa todo el ancho */
+    z-index: 100;    /* Asegura que esté por encima de otros elementos */
+    box-sizing: border-box; /* Incluye padding en el width */
+    /* ---- FIN MODIFICADO ---- */
+
     padding: 15px;
     background-color: #111; /* Un gris muy oscuro para los controles */
     text-align: center;
@@ -28,88 +37,75 @@ body, html {
     flex-wrap: wrap; /* Permite que los controles pasen a la siguiente línea si no caben */
 }
 
-.controls label {
-    margin-left: 10px;
-}
+/* Estilos de los elementos dentro de los controles (sin cambios) */
+.controls label { margin-left: 10px; }
+.controls input[type="range"] { vertical-align: middle; cursor: pointer; }
+.controls button { padding: 8px 15px; font-size: 16px; cursor: pointer; border: none; border-radius: 4px; color: white; }
+#playPauseBtn { background-color: #4CAF50; }
+#playPauseBtn.playing { background-color: #ff9800; }
+#stopBtn { background-color: #f44336; }
 
-.controls input[type="range"] {
-    vertical-align: middle;
-    cursor: pointer;
-}
-
-.controls button {
-    padding: 8px 15px;
-    font-size: 16px;
-    cursor: pointer;
-    border: none;
-    border-radius: 4px;
-    color: white;
-}
-
-#playPauseBtn {
-    background-color: #4CAF50; /* Verde */
-}
-
-#playPauseBtn.playing {
-    background-color: #ff9800; /* Naranja cuando está en Pausa */
-}
-
-#stopBtn {
-    background-color: #f44336; /* Rojo */
-}
 
 /* Área de visualización del Teleprompter (Wrapper) */
 #teleprompterDisplayWrapper {
+     /* ---- MODIFICADO: Añadir padding superior ---- */
+     /* Empuja el contenido hacia abajo para que no quede debajo de los controles fijos. */
+     /* Ajusta este valor si la altura de tus controles cambia (ej. más botones, padding diferente) */
+    padding-top: 75px; /* Estimación de la altura de la barra de controles + algo de margen */
+    /* ---- FIN MODIFICADO ---- */
+
     flex-grow: 1; /* Ocupa el espacio restante */
-    position: relative; /* Necesario para la línea guía absoluta */
-    overflow: hidden; /* Oculta el desbordamiento */
-    border: 1px solid #222; /* Borde sutil */
-    margin: 10px 10px 0 10px; /* Margen superior y laterales, sin margen inferior */
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #222;
+    margin: 0 10px 0 10px; /* Quitamos margen superior ya que usamos padding */
 }
 
 /* Área de texto del Teleprompter */
 #teleprompterDisplay {
     height: 100%;
-    padding: 50% 20px; /* Padding superior/inferior para centrar inicio/fin */
-    box-sizing: border-box; /* Incluye padding en el tamaño total */
-    font-size: 40px; /* Tamaño inicial, se controla con JS */
+    padding: 50% 20px;
+    box-sizing: border-box;
+    font-size: 40px;
     line-height: 1.5;
     text-align: center;
-    overflow-y: scroll; /* Permite scroll manual cuando está detenido */
-    scroll-behavior: smooth; /* Scroll suave manual */
-    /* Ocultar la barra de scroll estándar (opcional, funciona en Webkit/Blink) */
-    &::-webkit-scrollbar {
-        display: none; 
-    }
-    -ms-overflow-style: none;  /* IE y Edge */
-    scrollbar-width: none;  /* Firefox */
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+    &::-webkit-scrollbar { display: none; }
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
-/* Línea Guía (Opcional) */
+/* Línea Guía */
 .guide-line {
     position: absolute;
-    top: 40%; /* Posición vertical (ajustar según preferencia) */
+    /* ---- AJUSTE OPCIONAL: Posición relativa al Wrapper con padding ---- */
+    /* Como el wrapper tiene padding-top, podemos ajustar 'top' si queremos que la línea */
+    /* esté al 40% del *área visible* en lugar del wrapper completo. */
+    /* Por ahora lo dejamos como estaba, relativo al wrapper. */
+    top: 40%; 
+    /* ---- FIN AJUSTE OPCIONAL ---- */
     left: 0;
     width: 100%;
     height: 2px;
-    background-color: rgba(255, 0, 0, 0.5); /* Rojo semitransparente */
-    pointer-events: none; /* Para que no interfiera con el click */
+    background-color: rgba(255, 0, 0, 0.5);
+    pointer-events: none;
     z-index: 10;
 }
 
 
 /* Área de entrada de texto */
 #scriptInput {
-    /* ---- MODIFICADO ---- */
-    height: 250px; /* Más altura */
-    display: block; /* Asegura que sea bloque para ocultar/mostrar */
-    /* ---- FIN MODIFICADO ---- */
-    margin: 10px; /* Margen exterior */
-    padding: 10px; /* Margen interior */
+    height: 250px;
+    display: block;
+    margin: 10px; /* Mantenemos margen para separarlo del display */
+    padding: 10px;
     font-size: 14px;
-    background-color: #222; /* Fondo oscuro para el textarea */
-    color: white; /* Texto blanco */
+    background-color: #222;
+    color: white;
     border: 1px solid #444;
-    resize: vertical; /* Permite redimensionar verticalmente */
+    resize: vertical;
     box-sizing: border-box;
+    /* Asegurarse de que no se salga del contenedor flex padre */
+    flex-shrink: 0; /* Evita que se encoja si no hay espacio */
 }
