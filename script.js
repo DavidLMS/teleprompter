@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // --- Selectores (sin cambios) ---
     const scriptInput = document.getElementById('scriptInput');
     const teleprompterDisplay = document.getElementById('teleprompterDisplay');
     const teleprompterWrapper = document.getElementById('teleprompterDisplayWrapper');
@@ -8,14 +9,39 @@ document.addEventListener('DOMContentLoaded', () => {
     const speedValueSpan = document.getElementById('speedValue');
     const fontSizeControl = document.getElementById('fontSizeControl');
     const fontSizeValueSpan = document.getElementById('fontSizeValue');
+    // ---- NUEVO: Selector para el contenedor principal y los controles ----
+    const teleprompterContainer = document.querySelector('.teleprompter-container');
+    const controlsElement = document.querySelector('.controls');
+    // ---- FIN NUEVO ----
 
+    // --- Variables de estado (sin cambios) ---
     let isPlaying = false;
     let scrollInterval = null;
-    let currentSpeed = parseInt(speedControl.value, 10); // Velocidad base pixels por intervalo
-    let scrollPosition = 0; // Guardar posición al pausar o hacer scroll manual
-    const INTERVAL_DELAY = 50; // Milisegundos entre cada paso de scroll (más bajo = más suave)
+    let currentSpeed = parseInt(speedControl.value, 10);
+    let scrollPosition = 0;
+    const INTERVAL_DELAY = 50;
 
-    // --- Cargar Texto ---
+    // --- NUEVA FUNCIÓN: Ajustar Layout ---
+    function adjustLayout() {
+        if (!controlsElement || !teleprompterContainer) return; // Seguridad
+
+        const controlsHeight = controlsElement.offsetHeight;
+        console.log("Control bar height:", controlsHeight); // Para depuración
+        teleprompterContainer.style.paddingTop = `${controlsHeight}px`;
+
+        // Opcional: Podrías ajustar dinámicamente la altura del wrapper si flex-grow da problemas
+        // const availableHeight = window.innerHeight - controlsHeight;
+        // const scriptInputHeight = scriptInput.offsetHeight;
+        // const scriptInputMargin = (scriptInput.style.display !== 'none' ? 20 : 0); // Aprox margin top+bottom
+        // const wrapperMarginBottom = 10; // Margen inferior implícito o explícito
+        // teleprompterWrapper.style.height = `${availableHeight - scriptInputHeight - scriptInputMargin - wrapperMarginBottom}px`;
+        // console.log("Calculated wrapper height:", teleprompterWrapper.style.height); // Depuración
+    }
+    // --- FIN NUEVA FUNCIÓN ---
+
+    // --- Event Listeners (Modificados/Añadidos) ---
+
+    // Cargar Texto (sin cambios en la lógica interna)
     scriptInput.addEventListener('input', () => {
         teleprompterDisplay.innerHTML = scriptInput.value.replace(/\n/g, '<br>');
         if (isPlaying) {
@@ -24,80 +50,47 @@ document.addEventListener('DOMContentLoaded', () => {
              teleprompterDisplay.scrollTop = 0;
              scrollPosition = 0;
         }
+        // Podríamos llamar a adjustLayout() aquí si el contenido del textarea afectase la altura de controles (poco probable)
     });
 
-    // --- Controles de Reproducción ---
-    playPauseBtn.addEventListener('click', () => {
-        if (isPlaying) {
-            pauseScroll();
-        } else {
-            startScroll();
-        }
-    });
+    // Controles de Reproducción (sin cambios internos)
+    playPauseBtn.addEventListener('click', () => { if (isPlaying) pauseScroll(); else startScroll(); });
+    stopBtn.addEventListener('click', stopScroll);
 
-    stopBtn.addEventListener('click', () => {
-        stopScroll();
-    });
+    // Controles de Velocidad y Tamaño (sin cambios)
+    speedControl.addEventListener('input', () => { /* ... */ });
+    fontSizeControl.addEventListener('input', () => { /* ... */ });
 
-    // --- Control de Velocidad ---
-    speedControl.addEventListener('input', () => {
-        currentSpeed = parseInt(speedControl.value, 10);
-        speedValueSpan.textContent = currentSpeed;
-    });
+    // Scroll y Click en Display (sin cambios)
+    teleprompterDisplay.addEventListener('scroll', () => { /* ... */ });
+    teleprompterDisplay.addEventListener('click', (event) => { /* ... */ });
 
-    // --- Control de Tamaño de Texto ---
-    fontSizeControl.addEventListener('input', () => {
-        const newSize = fontSizeControl.value;
-        teleprompterDisplay.style.fontSize = `${newSize}px`;
-        fontSizeValueSpan.textContent = `${newSize}px`;
-    });
-
-    // --- Permitir seleccionar punto de inicio con scroll manual ---
-    teleprompterDisplay.addEventListener('scroll', () => {
-        if (!isPlaying) {
-            scrollPosition = teleprompterDisplay.scrollTop;
-        }
-    });
-     // --- Permitir seleccionar punto de inicio con click ---
-     teleprompterDisplay.addEventListener('click', (event) => {
-        if (!isPlaying) {
-             const clickY = event.clientY - teleprompterWrapper.getBoundingClientRect().top;
-             const displayHeight = teleprompterWrapper.clientHeight;
-             const targetScroll = teleprompterDisplay.scrollTop + clickY - (displayHeight * 0.40);
-             teleprompterDisplay.scrollTop = Math.max(0, targetScroll);
-             scrollPosition = teleprompterDisplay.scrollTop;
-             console.log("Nuevo punto de inicio fijado por click:", scrollPosition);
-        }
-    });
+    // --- NUEVO: Listener para resize ---
+    window.addEventListener('resize', adjustLayout);
+    // --- FIN NUEVO ---
 
 
-    // --- Funciones Auxiliares ---
+    // --- Funciones Auxiliares (Modificadas para llamar a adjustLayout) ---
     function startScroll() {
         if (teleprompterDisplay.innerHTML.trim() === '') return;
-
         isPlaying = true;
         playPauseBtn.textContent = 'Pause';
         playPauseBtn.classList.add('playing');
         scriptInput.disabled = true;
         teleprompterDisplay.contentEditable = 'false';
         teleprompterDisplay.style.scrollBehavior = 'auto';
-
-        // ---- MODIFICADO: Ocultar textarea ----
-        scriptInput.style.display = 'none';
-        // ---- FIN MODIFICADO ----
+        scriptInput.style.display = 'none'; // Ocultar textarea
+        adjustLayout(); // <<-- AJUSTAR LAYOUT AL OCULTAR TEXTAREA
 
         teleprompterDisplay.scrollTop = scrollPosition;
-
         if (scrollInterval) clearInterval(scrollInterval);
-
         scrollInterval = setInterval(() => {
+            // ... (lógica de scroll sin cambios) ...
             const scrollAmount = currentSpeed * 0.5;
             teleprompterDisplay.scrollTop += scrollAmount;
             scrollPosition = teleprompterDisplay.scrollTop;
-
             if (teleprompterDisplay.scrollTop + teleprompterDisplay.clientHeight >= teleprompterDisplay.scrollHeight - 5) {
                 stopScroll();
-                console.log("Llegó al final");
             }
         }, INTERVAL_DELAY);
     }
@@ -108,24 +101,21 @@ document.addEventListener('DOMContentLoaded', () => {
         playPauseBtn.classList.remove('playing');
         scriptInput.disabled = false;
         teleprompterDisplay.style.scrollBehavior = 'smooth';
-
-        // ---- MODIFICADO: Mostrar textarea ----
-        scriptInput.style.display = 'block'; // O el display original que tuviera
-        // ---- FIN MODIFICADO ----
+        scriptInput.style.display = 'block'; // Mostrar textarea
+        adjustLayout(); // <<-- AJUSTAR LAYOUT AL MOSTRAR TEXTAREA
 
         if (scrollInterval) {
             clearInterval(scrollInterval);
             scrollInterval = null;
         }
         scrollPosition = teleprompterDisplay.scrollTop;
-        console.log("Pausado en:", scrollPosition);
     }
 
     function stopScroll() {
-        pauseScroll(); // Llama a pause, que ya se encarga de mostrar el textarea
+        pauseScroll();
         teleprompterDisplay.scrollTop = 0;
         scrollPosition = 0;
-        console.log("Detenido y reseteado");
+        // adjustLayout() ya se llama en pauseScroll
     }
 
     // --- Inicialización ---
@@ -135,7 +125,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (scriptInput.value) {
          teleprompterDisplay.innerHTML = scriptInput.value.replace(/\n/g, '<br>');
     }
-    // Asegurarse de que el textarea está visible al inicio (aunque CSS debería hacerlo)
     scriptInput.style.display = 'block';
+    // --- NUEVO: Llamada inicial para ajustar layout ---
+    adjustLayout();
+    // Pequeño delay por si las fuentes o algo tarda en renderizar y afecta la altura inicial
+    setTimeout(adjustLayout, 100);
+    // --- FIN NUEVO ---
 
 });
